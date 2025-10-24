@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+instance/
+money_mate.db
+*.sqlite
+*.sqlite3
+.env
+.env.*
+cookies.txt
+.DS_Store
+node_modules/
