@@ -1,0 +1,359 @@
+openapi: 3.0.3
+info:
+  title: MoneyMate API
+  version: 1.0.0
+servers:
+  - url: http://127.0.0.1:5001
+paths:
+  /api/auth/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string, format: email }
+                password: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/auth/login:
+    post:
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string, format: email }
+                password: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/auth/logout:
+    post:
+      summary: Logout
+      responses:
+        '200': { description: OK }
+  /api/auth/me:
+    get:
+      summary: Current user
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+  /api/profile:
+    get:
+      summary: Get profile
+      responses:
+        '200': { description: OK }
+    put:
+      summary: Update profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                full_name: { type: string }
+                username: { type: string }
+                email: { type: string, format: email }
+      responses:
+        '200': { description: OK }
+  /api/profile/password:
+    post:
+      summary: Change password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                current_password: { type: string }
+                new_password: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/profile/avatar:
+    post:
+      summary: Upload avatar
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+      responses:
+        '200': { description: OK }
+  /api/transactions:
+    get:
+      summary: List transactions
+      parameters:
+        - in: query
+          name: category
+          schema: { type: string }
+        - in: query
+          name: start_date
+          schema: { type: string, format: date-time }
+        - in: query
+          name: end_date
+          schema: { type: string, format: date-time }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+    post:
+      summary: Create transaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionCreate'
+      responses:
+        '200': { description: OK }
+    delete:
+      summary: Delete all user transactions
+      responses:
+        '200': { description: OK }
+  /api/transactions/{id}:
+    put:
+      summary: Update transaction
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionUpdate'
+      responses:
+        '200': { description: OK }
+    delete:
+      summary: Delete transaction
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: OK }
+  /api/balance:
+    get:
+      summary: Balance summary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  income: { type: number }
+                  expense: { type: number }
+                  balance: { type: number }
+  /api/category_summary:
+    get:
+      summary: Expense by category
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    category: { type: string }
+                    amount: { type: number }
+  /api/goals:
+    get:
+      summary: List goals
+      responses:
+        '200': { description: OK }
+    post:
+      summary: Create goal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                target_amount: { type: number }
+                category: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/goals/{id}:
+    delete:
+      summary: Delete goal
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: OK }
+  /api/moods:
+    get:
+      summary: List moods
+      responses:
+        '200': { description: OK }
+    post:
+      summary: Create mood
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                score: { type: integer, minimum: 1, maximum: 5 }
+                note: { type: string }
+                date: { type: string, format: date }
+      responses:
+        '200': { description: OK }
+  /api/wallets:
+    post:
+      summary: Create wallet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/wallets/{wallet_id}:
+    put:
+      summary: Rename wallet
+      parameters:
+        - in: path
+          name: wallet_id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/wallets/{wallet_id}/invite:
+    post:
+      summary: Invite member
+      parameters:
+        - in: path
+          name: wallet_id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string, format: email }
+      responses:
+        '200': { description: OK }
+  /api/wallets/{wallet_id}/members:
+    get:
+      summary: List members
+      parameters:
+        - in: path
+          name: wallet_id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: OK }
+  /api/wallets/{wallet_id}/members/{member_id}:
+    delete:
+      summary: Remove member
+      parameters:
+        - in: path
+          name: wallet_id
+          required: true
+          schema: { type: integer }
+        - in: path
+          name: member_id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: OK }
+  /api/wallets/{wallet_id}/members/{member_id}/status:
+    post:
+      summary: Update member status
+      parameters:
+        - in: path
+          name: wallet_id
+          required: true
+          schema: { type: integer }
+        - in: path
+          name: member_id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status: { type: string, enum: [invited, active, declined] }
+      responses:
+        '200': { description: OK }
+components:
+  schemas:
+    Transaction:
+      type: object
+      properties:
+        id: { type: integer }
+        type: { type: string, enum: [income, expense] }
+        category: { type: string }
+        amount: { type: number }
+        date: { type: string, format: date-time }
+    TransactionCreate:
+      type: object
+      required: [type, amount]
+      properties:
+        type: { type: string, enum: [income, expense] }
+        category: { type: string }
+        amount: { type: number }
+        date: { type: string, format: date-time }
+    TransactionUpdate:
+      type: object
+      properties:
+        type: { type: string, enum: [income, expense] }
+        category: { type: string }
+        amount: { type: number }
+        date: { type: string, format: date-time }
