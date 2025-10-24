@@ -8,6 +8,23 @@ Dark-themed, full-stack budgeting app built with Flask, SQLite (SQLAlchemy), and
 
 ---
 
+## 🧾 Abstract
+MoneyMate is a dark-themed, full-stack budgeting application that enables users to track income and expenses, visualize spending patterns, set goals, record mood, and collaborate through shared wallets. The app is built with Flask and SQLAlchemy on the backend and vanilla JavaScript + Chart.js on the frontend. This README is structured for academic review and includes problem statement, architecture, data model, implementation details, evaluation, and future work.
+
+---
+
+## 📌 Problem Statement & Objectives
+Modern personal finance tools can feel complex or impersonal. MoneyMate aims to provide an intuitive, minimal, dark-mode interface with features that encourage financial awareness and collaboration.
+
+Objectives:
+- Simple, accurate tracking of income and expenses
+- Actionable visualizations (breakdown, trend, heatmap)
+- Goal progress and habit-building (badges)
+- Optional mood tracking to relate emotions and spending
+- Collaboration via shared wallets (invites, roles, statuses)
+
+---
+
 ## ✨ Highlights
 - Track income and expenses with filters and exports.
 - Interactive Expense Breakdown (pie/bar) + category details + trend.
@@ -20,6 +37,17 @@ Dark-themed, full-stack budgeting app built with Flask, SQLite (SQLAlchemy), and
 - In-app Demo Mode to seed realistic data quickly.
 
 Dark, responsive UI using CSS variables; consistent with the original MoneyMate style.
+
+---
+
+## 🏗️ System Architecture (High-Level)
+- Flask app with Blueprints (auth, profile, transactions, goals, moods, wallets)
+- SQLite via SQLAlchemy ORM (dev mode, auto-create tables)
+- Single-page UI served by Flask templates; JS drives all interactions
+- Chart.js for visualizations; custom plugin paints dark background
+- Session-based authentication; PBKDF2 password hashing
+
+Key flows: user session → REST endpoints → ORM → DB; responses hydrate charts and UI state on the client.
 
 ---
 
@@ -39,6 +67,18 @@ MoneyMate/
 ├─ README.md              # You are here
 └─ docs/                  # Additional documentation (setup, API, demo, architecture)
 ```
+
+---
+
+## 🗃️ Data Model (Summary)
+- User(id, email, password_hash, full_name, username, avatar_url, created_at)
+- Transaction(id, user_id, type[income|expense], category, amount, date)
+- Goal(id, user_id, name, target_amount, category, created_at, achieved_at)
+- Mood(id, user_id, score(1..5), note, date)
+- Wallet(id, owner_id, name)
+- WalletMember(id, wallet_id, email, role[owner|member], status[invited|active|declined])
+
+Relationships: User 1—N Transaction/Goal/Mood; Wallet 1—N WalletMember; User (owner_id) 1—N Wallet.
 
 ---
 
@@ -90,15 +130,21 @@ All endpoints documented in docs/API.md, including:
 
 ---
 
-## 🧱 Architecture
+## 🧱 Implementation Notes
 
-- Flask app using Blueprints (see routes/)
-- SQLAlchemy models with db.create_all() on startup for dev
-- Single-Page UI via templates/index.html + static/js/script.js
-- Chart.js for charts; dark background plugin
-- Session-based auth; PBKDF2 password hashing
+- Backend
+  - Flask Blueprints and JSON APIs return clear error messages
+  - Simple auth guard wrapper `require_login()` applied on endpoints
+  - Owner-based access control on wallet routes; invitee can accept/decline
+  - Password hashing with PBKDF2; avatars stored under static/uploads for dev
+- Frontend
+  - Central `state` object with lastTransactions, lastBreakdown, filters, goals, moods
+  - Expense Breakdown dynamically renders pie/bar; click→details + daily trend
+  - Heatmap canvas draws last-30-days intensity grid
+  - Profile page: avatar upload (multipart/form-data), password change flow
+  - Demo Mode seeds data (transactions, goals, moods, wallet invites)
 
-Design notes: docs/ARCHITECTURE.md
+Design notes: docs/ARCHITECTURE.md (optional)
 
 ---
 
@@ -111,6 +157,36 @@ Step-by-step demo covering all features is in docs/DEMO.md. Quick path:
 3) Goals progress + Mood trend + Heatmap
 4) Shared Wallets → Manage → rename/invite/accept/remove
 5) Profile → update info, change password, upload avatar, see badges
+
+---
+
+## 🔒 Security Considerations
+- Session-based auth; server checks user_id per request
+- Owner checks on wallet mutations; invitee matches by email for status changes
+- Passwords never stored plaintext; PBKDF2 hashing
+- File uploads restricted to images; stored locally for dev only
+
+---
+
+## 🧪 Evaluation & Limitations
+What works well:
+- Clear, dark UI with responsive charts and state-driven updates
+- Goals and badges provide quick motivation
+- Wallet collaboration flow (invite → accept/decline → remove)
+
+Limitations (roadmap):
+- No real-time sync (could add SSE/WebSockets)
+- Email-based invite acceptance is simulated (no email delivery)
+- SQLite-only dev DB (could add Postgres + migrations)
+
+---
+
+## 🧭 Future Work
+- Real-time collaboration updates
+- Detailed analytics page (comparisons, forecasts)
+- AI Insights backend integration (currently mocked placeholders)
+- Role management and multi-wallet support per user
+- Proper migrations and production-ready storage for avatars
 
 ---
 
