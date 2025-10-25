@@ -54,6 +54,12 @@ Key flows: user session → REST endpoints → ORM → DB; responses hydrate cha
 
 ---
 
+## 🖼️ System Diagram
+
+![System Diagram](docs/diagrams/component_architecture.png)
+
+---
+
 ## 📂 Repo Structure
 
 ```
@@ -104,6 +110,14 @@ FLASK_APP=app:create_app flask run -p 5001
 3) Open http://127.0.0.1:5001 and register/login
 
 4) Click “Run Demo” to populate sample data.
+
+---
+
+## 🔐 Credentials
+
+- This app uses self-registration; there are no preset accounts.
+- Local development: register any email/password.
+- Demo Mode: click “Run Demo” on the homepage to seed sample data (transactions, goals, moods, wallets).
 
 ---
 

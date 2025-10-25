@@ -1,5 +1,45 @@
 # Ethics & AI Usage Reflection
 
+This document summarizes how AI tools were used during the project, the risks considered, and the safeguards we applied. It also clarifies licensing and data/privacy practices. The intent is transparency and reproducibility.
+
+## Where AI Was Used
+- Requirement clarifications, small planning outlines, and checklists
+- Drafting documentation boilerplate (README sections, setup steps, contribution notes)
+- Generating small functions/boilerplate and refactor suggestions (curated by maintainers)
+- Producing test scaffolding and coverage improvement ideas
+
+## Human Review & Validation
+- All AI‑generated suggestions were reviewed, edited, and validated by maintainers
+- Tests (pytest with coverage gate) and manual verification back up changes
+- Security‑sensitive components (auth, password hashing, sessions) were carefully audited
+
+## Risks Considered
+- Incorrect or hallucinated APIs, fragile code patterns
+- Security oversights (auth bypasses, unsafe file handling, leaks)
+- Licensing/IP contamination when integrating generated text/code
+- Over‑reliance on AI vs. critical engineering judgment
+- Potential bias or misleading examples in generated content
+
+## Mitigations
+- Cross‑check against official docs and the codebase before merging
+- Enforce CI (lint + tests + coverage gate ≥ 60%)
+- Prefer small PRs with focused scope and clear test additions
+- Keep dependencies minimal and pinned; avoid copying proprietary content
+- Use permissive repository license and attribute external sources when appropriate
+
+## Data & Privacy Practices
+- No production secrets or personal data were shared with AI tools
+- Local environment variables and credentials are excluded from prompts and the repository
+- Uploaded files (e.g., avatars) are for local dev only; sensitive data is not included
+
+## Attribution & Licensing
+- AI outputs are treated as drafts; final responsibility lies with maintainers
+- Content is integrated under the repository’s license; contributors ensure license compatibility
+
+## Reflection
+- AI accelerated drafting and small refactors; human review was essential for correctness and security
+- Best results came from clear prompts, small changes, and immediate tests/CI feedback
+
 This document explains where AI tools were used, risks considered, and how we mitigated them.
 
 ## Where AI Was Used
