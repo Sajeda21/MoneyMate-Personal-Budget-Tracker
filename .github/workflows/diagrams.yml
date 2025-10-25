@@ -1,0 +1,30 @@
+name: Render UML Diagrams
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/diagrams/**/*.md'
+      - '.github/workflows/diagrams.yml'
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Mermaid CLI
+        run: |
+          npm install -g @mermaid-js/mermaid-cli@10.9.0
+      - name: Render diagrams to PNG
+        run: |
+          chmod +x scripts/render_diagrams.sh
+          ./scripts/render_diagrams.sh
+      - name: Commit rendered PNGs
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'docs/diagrams/*.png'
+          message: 'chore(diagrams): render UML PNGs from Mermaid sources'
+          default_author: github_actions
