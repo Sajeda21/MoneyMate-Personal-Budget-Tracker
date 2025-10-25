@@ -4,15 +4,27 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   render:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Render diagrams to PNG via Kroki
-        run: |
-          chmod +x scripts/render_diagrams_kroki.sh || true
-          ./scripts/render_diagrams_kroki.sh
+        with:
+          fetch-depth: 0
+      - name: Render diagrams in Docker (mermaid-cli)
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ghcr.io/mermaid-js/mermaid-cli/mermaid-cli:10.9.0
+          options: -v ${{ github.workspace }}:/workspace -w /workspace
+          run: |
+            mmdc -i docs/diagrams/usecase_diagram.md -o docs/diagrams/usecase_diagram.png --md -b transparent -w 1600
+            mmdc -i docs/diagrams/class_diagram.md -o docs/diagrams/class_diagram.png --md -b transparent -w 1600
+            mmdc -i docs/diagrams/sequence_add_expense.md -o docs/diagrams/sequence_add_expense.png --md -b transparent -w 1600
+            mmdc -i docs/diagrams/sequence_view_breakdown.md -o docs/diagrams/sequence_view_breakdown.png --md -b transparent -w 1600
+            mmdc -i docs/diagrams/component_architecture.md -o docs/diagrams/component_architecture.png --md -b transparent -w 1600
       - name: Commit rendered PNGs
         uses: EndBug/add-and-commit@v9
         with:

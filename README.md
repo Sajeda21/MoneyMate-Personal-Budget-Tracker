@@ -1,5 +1,8 @@
 # 💰 MoneyMate – Personal Budget Tracker (Web App)
 
+![CI](https://img.shields.io/github/actions/workflow/status/Sajeda21/MoneyMate-Personal-Budget-Tracker/ci.yml?branch=main&label=CI)
+![coverage](https://img.shields.io/badge/coverage-%E2%89%A560%25-brightgreen)
+
 Dark-themed, full-stack budgeting app built with Flask, SQLite (SQLAlchemy), and vanilla JS + Chart.js. Tracks income/expenses, renders interactive breakdowns, provides insights, supports collaboration via shared wallets, and offers a polished profile management experience.
 
 ## 👥 Team
