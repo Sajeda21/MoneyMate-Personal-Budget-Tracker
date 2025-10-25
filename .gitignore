@@ -10,3 +10,4 @@ money_mate.db
 cookies.txt
 .DS_Store
 node_modules/
+.coverage
