@@ -17,3 +17,4 @@ sequenceDiagram
   FE->>FE: Update list, totals, breakdown chart
   FE-->>U: Show confirmation
 ```
+
